@@ -40,7 +40,10 @@ class PlacesGoogleFields:
             "places.dineIn",
             "places.internationalPhoneNumber",
             "places.nationalPhoneNumber",
-            "places.name",
+            "places.goodForChildren",
+            "places.goodForGroups",
+            "places.goodForWatchingSports",
+            "places.allowsDogs",
         ]
 
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from restaurant.metadatas import PriceLevel
+from restaurant.metadatas import PriceLevel, Atmosphere
 
 
 @dataclass
@@ -24,6 +24,7 @@ class Features:
     wifi: bool
     reservation: bool
     parking: bool
+    dog_allowed: bool
 
 @dataclass
 class Reviews:
@@ -40,7 +41,7 @@ class Restaurant:
     rating: float
     types: list
     price_level: List[PriceLevel]
-    atmosphere_target: List[str]
+    atmosphere_target: List[Atmosphere]
     contact: Contact
     features: Features
     reviews: List[Reviews]

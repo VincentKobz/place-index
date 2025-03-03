@@ -10,3 +10,13 @@ class PriceLevel(str, Enum):
     VERY_HIGH: str = "VERY_HIGH"
     UNKNOWN: str = "UNKNOWN"
     FREE: str = "FREE"
+
+class Atmosphere(str, Enum):
+    SOLO = "Solo travel"
+    COUPLES = "Couples"
+    FAMILY = "Family"
+    FRIENDS = "Friends getaway"
+    GROUPS = "Groups"
+    BUSINESS = "Business"
+    SPORT = "Sport"
+    UNKNOWN = "Unknown"
