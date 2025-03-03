@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
+from restaurant.metadatas import Atmosphere
+
 
 @dataclass
 class BaseTripadvisorContent:
@@ -27,7 +29,7 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
     price_level: str
     features: List[str]
     types: List[str]
-    trip_types: List[str]
+    trip_types: List[Atmosphere]
 
     @classmethod
     def from_place(cls, place_details):
@@ -57,17 +59,6 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
         return features + [subcategory["localized_name"] for subcategory in subcategories if "localized_name" in subcategory]
 
 
-class TripType(Enum):
-    """
-    Enum to represent the trip type
-    """
-    SOLO = "Solo travel"
-    COUPLES = "Couples"
-    FAMILY = "Family"
-    FRIENDS = "Friends getaway"
-    Business = "Business"
-    UNKNOWN = "Unknown"
-
 @dataclass
 class TripadvisorReview:
     lang: str
@@ -76,13 +67,13 @@ class TripadvisorReview:
     url: str
     title: str
     content: str
-    trip_type: TripType
+    trip_type: Atmosphere
 
     @classmethod
     def from_place(cls, review):
         trip_type = review.get("trip_type", "")
-        trip_type_enum = TripType(trip_type) if trip_type in TripType else TripType.UNKNOWN
-        if trip_type_enum == TripType.UNKNOWN:
+        trip_type_enum = Atmosphere(trip_type) if trip_type in Atmosphere else Atmosphere.UNKNOWN
+        if trip_type_enum == Atmosphere.UNKNOWN:
             print(f"Unknown trip type: {trip_type}")
 
         return cls(

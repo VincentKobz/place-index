@@ -1,5 +1,5 @@
 from restaurant.generic_places import Restaurant, Contact, Features, Reviews
-from restaurant.metadatas import PriceLevel
+from restaurant.metadatas import PriceLevel, Atmosphere
 
 gmaps_price_level_mapper = {
     "": PriceLevel.UNKNOWN,
@@ -11,6 +11,12 @@ gmaps_price_level_mapper = {
     "PRICE_LEVEL_VERY_EXPENSIVE": PriceLevel.VERY_HIGH
 }
 
+ATMOSPHERE_MAPPER = {
+    "goodForChildren": Atmosphere.FAMILY,
+    "goodForGroups": Atmosphere.GROUPS,
+    "goodForWatchingSports": Atmosphere.SPORT
+}
+
 class GmapsFeaturesChecker:
     """
     Class to check the features of a google maps place
@@ -18,9 +24,13 @@ class GmapsFeaturesChecker:
     TYPES_OF_ACCESSIBILITY = ["wheelchairAccessibleParking", "wheelchairAccessibleEntrance", "wheelchairAccessibleRestroom", "wheelchairAccessibleSeating"]
     CARD_PAYMENT_OPTIONS = ["acceptsCreditCards", "acceptsDebitCards", "acceptsNfc"]
     ALCOHOL_SERVING_OPTIONS = ["servesBeer", "servesWine", "servesCocktails"]
+    DOG_FRIENDLY_OPTIONS = ["allowsDogs"]
+    SEATING_OPTIONS = ["outdoorSeating", "dineIn"]
 
     def __init__(self, gmaps_place: dict):
         self.gmaps_place = gmaps_place
+        self.seating = any(gmaps_place.get(seating_option, False) for seating_option in self.SEATING_OPTIONS)
+        self.dog_friendly = any(gmaps_place.get(dog_friendly_option, False) for dog_friendly_option in self.DOG_FRIENDLY_OPTIONS)
 
     def is_accessible(self) -> bool:
         """
@@ -77,9 +87,10 @@ def gmaps_place_convertor(gmaps_place: dict) -> Restaurant:
         credit_card=features_checker.is_credit_card_accepted(),
         serve_alcohol=features_checker.is_alcohol_served(),
         takeout=gmaps_place.get("takeout", False),
-        seating=gmaps_place.get("dineIn", False),
+        seating=features_checker.seating,
         wifi=False,
         parking=False,
+        dog_allowed=features_checker.dog_friendly
     )
 
     place_reviews = [
@@ -92,14 +103,16 @@ def gmaps_place_convertor(gmaps_place: dict) -> Restaurant:
         ) for review in gmaps_place.get("reviews", []) if "text" in review
     ]
 
+    restaurant_atmosphere = [value for key, value in ATMOSPHERE_MAPPER.items() if gmaps_place.get(key, False)]
+
     return Restaurant(
         id=gmaps_place["id"],
-        name=gmaps_place["name"],
+        name=gmaps_place["displayName"].get("text", ""),
         rating=gmaps_place.get("rating", -1),
         types=gmaps_place.get("types", []),
         price_level=[gmaps_price_level_mapper[gmaps_place.get("priceLevel", "")]],
         contact=place_contact,
         features=place_features,
         reviews=place_reviews,
-        atmosphere_target=[]
+        atmosphere_target=restaurant_atmosphere
     )

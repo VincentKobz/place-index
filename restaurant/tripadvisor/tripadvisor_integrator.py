@@ -32,6 +32,7 @@ class TripadvisorFeatures:
     SEATING_OPTIONS = ["Seating", "Outdoor Seating", "Sit down"]
     DOG_FRIENDLY_OPTIONS = ["Dog Friendly"]
     PARKING_OPTIONS = ["Parking Available"]
+    TAKEOUT_OPTIONS = ["Takeout"]
 
     def __init__(self, trip_place: TripadvisorLocationDetailsHandler):
         self.trip_place = trip_place
@@ -43,6 +44,7 @@ class TripadvisorFeatures:
         self.seating = any(seating_option in trip_place.features for seating_option in self.SEATING_OPTIONS)
         self.dog_friendly = any(dog_friendly_option in trip_place.features for dog_friendly_option in self.DOG_FRIENDLY_OPTIONS)
         self.parking = any(parking_option in trip_place.features for parking_option in self.PARKING_OPTIONS)
+        self.takeout = any(takeout_option in trip_place.features for takeout_option in self.TAKEOUT_OPTIONS)
 
 def tripadvisor_place_convertor(tripadvisor_place: TripadvisorFullContent) -> Restaurant:
     """
@@ -68,10 +70,11 @@ def tripadvisor_place_convertor(tripadvisor_place: TripadvisorFullContent) -> Re
         is_accessible=trip_features.is_accessible,
         credit_card=trip_features.is_credit_card_accepted,
         serve_alcohol=trip_features.is_alcohol_served,
-        takeout=trip_features.dog_friendly,
+        takeout=trip_features.takeout,
         seating=trip_features.seating,
         wifi=trip_features.wifi,
-        parking=trip_features.parking
+        parking=trip_features.parking,
+        dog_allowed=trip_features.dog_friendly
     )
 
     place_reviews = [
