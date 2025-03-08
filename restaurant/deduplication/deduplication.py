@@ -1,12 +1,16 @@
+from typing import List
+
+import mrpt
+import numpy as np
+from fastembed import TextEmbedding
+
 from dataclasses import dataclass
-from vectordb import Memory
 
 from restaurant.generic_places import Restaurant
 
 @dataclass
 class QueryResult:
-    chunk: str
-    metadata: dict
+    match: str
     distance: float
 
     @classmethod
@@ -18,8 +22,16 @@ class VectorDb:
     """
     Class to handle the deduplication of restaurants using a vector database
     """
-    memory = Memory()
-    nb_items = 0
+    def __init__(self):
+        # Use the default model to perform text embedding
+        self.embedding_memory: List[dict] = []
+        self.embedding_model = TextEmbedding()
+
+    def embed_restaurants(self, restaurant: Restaurant):
+        embedded_vector_place_name = list(self.embedding_model.embed(restaurant.name))[0]
+
+        return np.array(embedded_vector_place_name).astype(np.float32)
+
 
     def add_restaurant(self, restaurant: Restaurant):
         """
@@ -27,8 +39,12 @@ class VectorDb:
         @param restaurant:
         @return:
         """
-        self.memory.save(restaurant.name, [restaurant.id])
-        self.nb_items += 1
+        self.embedding_memory.append(
+            {
+                "embedded_vector" : self.embed_restaurants(restaurant),
+                "restaurant": restaurant.name
+            }
+        )
 
     def get_restaurant(self, restaurant: Restaurant) -> QueryResult:
         """
@@ -36,8 +52,13 @@ class VectorDb:
         @param restaurant:
         @return:
         """
-        if self.nb_items == 0:
-            return QueryResult(chunk="", metadata={}, distance=1.0)
-        result = self.memory.search(restaurant.name, top_n=1)
-        return QueryResult.from_json(result[0])
+        if len(self.embedding_memory) == 0:
+            return QueryResult("", 1)
+
+        embedded_vector_place_name = self.embed_restaurants(restaurant)
+        embedded_vectors = [self.embedding_memory[i]["embedded_vector"] for i in range(len(self.embedding_memory))]
+        index = mrpt.MRPTIndex(np.array(embedded_vectors).astype(np.float32))
+        indexes, distances = index.exact_search(embedded_vector_place_name, 1, return_distances=True)
+
+        return QueryResult.from_json({"match": self.embedding_memory[indexes[0]]["restaurant"], "distance": distances[0].astype(float)})
 
