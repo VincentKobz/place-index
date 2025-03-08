@@ -90,7 +90,7 @@ def tripadvisor_place_convertor(tripadvisor_place: TripadvisorFullContent) -> Re
     return Restaurant(
         id=str(trip_details.location_id),
         name=trip_details.name,
-        rating=trip_details.rating,
+        rating=float(trip_details.rating),
         types=trip_details.types,
         price_level=parse_tripadvisor_price_level(trip_details.price_level),
         contact=place_contact,

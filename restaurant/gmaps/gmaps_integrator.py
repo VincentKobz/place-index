@@ -109,7 +109,7 @@ def gmaps_place_convertor(gmaps_place: dict) -> Restaurant:
         id=gmaps_place["id"],
         name=gmaps_place["displayName"].get("text", ""),
         rating=gmaps_place.get("rating", -1),
-        types=gmaps_place.get("types", []),
+        types=gmaps_place.get("types", []) + [gmaps_place.get("primaryType", "")],
         price_level=[gmaps_price_level_mapper[gmaps_place.get("priceLevel", "")]],
         contact=place_contact,
         features=place_features,
