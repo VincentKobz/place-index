@@ -21,6 +21,7 @@ class PlacesGoogleFields:
             "places.displayName",
             "places.id",
             "places.types",
+            "places.primaryType",
             "places.rating",
             "places.priceLevel",
             "places.formattedAddress",
