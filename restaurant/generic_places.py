@@ -46,6 +46,15 @@ class Restaurant:
     features: Features
     reviews: List[Reviews]
 
+    @classmethod
+    def from_json(cls, json):
+        new_instance = cls(**json)
+        new_instance.contact = Contact(**json["contact"])
+        new_instance.features = Features(**json["features"])
+        new_instance.reviews = [Reviews(**review) for review in json["reviews"]]
+
+        return new_instance
+
     def is_exploitable(self):
         """
         Check if the restaurant is exploitable (has enough basic information)
