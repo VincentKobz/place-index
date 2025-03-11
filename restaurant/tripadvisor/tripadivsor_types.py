@@ -9,6 +9,7 @@ from restaurant.metadatas import Atmosphere
 class BaseTripadvisorContent:
     location_id: int
 
+
 @dataclass
 class TripadvisorNearbyHandler(BaseTripadvisorContent):
     name: str
@@ -16,6 +17,7 @@ class TripadvisorNearbyHandler(BaseTripadvisorContent):
     @classmethod
     def from_place(cls, place):
         return cls(place["location_id"], place["name"])
+
 
 @dataclass
 class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
@@ -43,9 +45,19 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
             place_details.get("address_obj", "").get("address_string", ""),
             place_details.get("rating", -1),
             place_details.get("price_level", ""),
-            cls.merge_features(place_details.get("features", []), place_details.get("subcategory", [])),
-            [cuisine["localized_name"] for cuisine in place_details.get("cuisine", []) if "localized_name" in cuisine],
-            [trip_type["localized_name"] for trip_type in place_details.get("trip_types", []) if "localized_name" in trip_type]
+            cls.merge_features(
+                place_details.get("features", []), place_details.get("subcategory", [])
+            ),
+            [
+                cuisine["localized_name"]
+                for cuisine in place_details.get("cuisine", [])
+                if "localized_name" in cuisine
+            ],
+            [
+                trip_type["localized_name"]
+                for trip_type in place_details.get("trip_types", [])
+                if "localized_name" in trip_type
+            ],
         )
 
     @staticmethod
@@ -56,7 +68,11 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
         :param subcategories:
         :return:
         """
-        return features + [subcategory["localized_name"] for subcategory in subcategories if "localized_name" in subcategory]
+        return features + [
+            subcategory["localized_name"]
+            for subcategory in subcategories
+            if "localized_name" in subcategory
+        ]
 
 
 @dataclass
@@ -72,7 +88,9 @@ class TripadvisorReview:
     @classmethod
     def from_place(cls, review):
         trip_type = review.get("trip_type", "")
-        trip_type_enum = Atmosphere(trip_type) if trip_type in Atmosphere else Atmosphere.UNKNOWN
+        trip_type_enum = (
+            Atmosphere(trip_type) if trip_type in Atmosphere else Atmosphere.UNKNOWN
+        )
         if trip_type_enum == Atmosphere.UNKNOWN:
             print(f"Unknown trip type: {trip_type}")
 
@@ -86,6 +104,7 @@ class TripadvisorReview:
             trip_type_enum,
         )
 
+
 @dataclass
 class TripadvisorReviewHandler(BaseTripadvisorContent):
     reviews: List[TripadvisorReview]
@@ -94,8 +113,9 @@ class TripadvisorReviewHandler(BaseTripadvisorContent):
     def from_place(cls, location_id: int, place_reviews):
         return cls(
             location_id,
-            [TripadvisorReview.from_place(review) for review in place_reviews["data"]]
+            [TripadvisorReview.from_place(review) for review in place_reviews["data"]],
         )
+
 
 @dataclass
 class TripadvisorFullContent:

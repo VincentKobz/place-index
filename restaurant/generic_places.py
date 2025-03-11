@@ -14,6 +14,7 @@ class Contact:
     tripadvisor_uri: str
     specific_uri: str
 
+
 @dataclass
 class Features:
     credit_card: bool
@@ -26,6 +27,7 @@ class Features:
     parking: bool
     dog_allowed: bool
 
+
 @dataclass
 class Reviews:
     rating: float
@@ -33,6 +35,7 @@ class Reviews:
     title: str
     content: str
     publication_date: str | None
+
 
 @dataclass
 class Restaurant:
@@ -67,4 +70,10 @@ class Restaurant:
         Check if the restaurant has qualitative data (has enough qualitative information to be exploitable)
         :return:
         """
-        return self.is_exploitable() and self.price_level != PriceLevel.UNKNOWN and len(self.types) > 0 and len(self.reviews) > 0 and any(self.features.__getstate__().values())
+        return (
+            self.is_exploitable()
+            and self.price_level != PriceLevel.UNKNOWN
+            and len(self.types) > 0
+            and len(self.reviews) > 0
+            and any(self.features.__getstate__().values())
+        )

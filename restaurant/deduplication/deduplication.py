@@ -8,6 +8,7 @@ from dataclasses import dataclass
 
 from restaurant.generic_places import Restaurant
 
+
 @dataclass
 class QueryResult:
     match: str
@@ -22,16 +23,18 @@ class VectorDb:
     """
     Class to handle the deduplication of restaurants using a vector database
     """
+
     def __init__(self):
         # Use the default model to perform text embedding
         self.embedding_memory: List[dict] = []
         self.embedding_model = TextEmbedding()
 
     def embed_restaurants(self, restaurant: Restaurant):
-        embedded_vector_place_name = list(self.embedding_model.embed(restaurant.name))[0]
+        embedded_vector_place_name = list(self.embedding_model.embed(restaurant.name))[
+            0
+        ]
 
         return np.array(embedded_vector_place_name).astype(np.float32)
-
 
     def add_restaurant(self, restaurant: Restaurant):
         """
@@ -41,8 +44,8 @@ class VectorDb:
         """
         self.embedding_memory.append(
             {
-                "embedded_vector" : self.embed_restaurants(restaurant),
-                "restaurant": restaurant.name
+                "embedded_vector": self.embed_restaurants(restaurant),
+                "restaurant": restaurant.name,
             }
         )
 
@@ -56,9 +59,18 @@ class VectorDb:
             return QueryResult("", 1)
 
         embedded_vector_place_name = self.embed_restaurants(restaurant)
-        embedded_vectors = [self.embedding_memory[i]["embedded_vector"] for i in range(len(self.embedding_memory))]
+        embedded_vectors = [
+            self.embedding_memory[i]["embedded_vector"]
+            for i in range(len(self.embedding_memory))
+        ]
         index = mrpt.MRPTIndex(np.array(embedded_vectors).astype(np.float32))
-        indexes, distances = index.exact_search(embedded_vector_place_name, 1, return_distances=True)
+        indexes, distances = index.exact_search(
+            embedded_vector_place_name, 1, return_distances=True
+        )
 
-        return QueryResult.from_json({"match": self.embedding_memory[indexes[0]]["restaurant"], "distance": distances[0].astype(float)})
-
+        return QueryResult.from_json(
+            {
+                "match": self.embedding_memory[indexes[0]]["restaurant"],
+                "distance": distances[0].astype(float),
+            }
+        )
