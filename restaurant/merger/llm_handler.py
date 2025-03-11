@@ -6,16 +6,15 @@ from openai import OpenAI, AuthenticationError, APIConnectionError
 
 from restaurant import LLM_KEY
 
+
 @dataclass
 class ExpectedAnswer:
     tags: List[str]
 
+
 class LLMHandler:
     def __init__(self):
-        self.client = OpenAI(
-            base_url="https://api.deepseek.com",
-            api_key=LLM_KEY
-        )
+        self.client = OpenAI(base_url="https://api.deepseek.com", api_key=LLM_KEY)
         self.merge_tags_prompt = """
         I will provide you with two lists of tags from different sources. These tags describe the type of cuisine or food offered by a restaurant.
         Your task is to merge these lists into a single, cohesive list by selecting the most appropriate tags while avoiding redundancies or duplicates.
@@ -41,11 +40,15 @@ class LLMHandler:
                 model=self.model,
                 messages=[
                     {"role": "system", "content": self.merge_tags_prompt},
-                    {"role": "user", "content": "List 1: " + " ".join(tags_1) + "\nList 2: " + " ".join(tags_2)},
+                    {
+                        "role": "user",
+                        "content": "List 1: "
+                        + " ".join(tags_1)
+                        + "\nList 2: "
+                        + " ".join(tags_2),
+                    },
                 ],
-                response_format={
-                    'type': 'json_object'
-                },
+                response_format={"type": "json_object"},
             )
         except AuthenticationError as e:
             raise Exception("Invalid LLM API key provided.", e)

@@ -8,6 +8,7 @@ from restaurant.metadatas import GMAPS_URL
 from restaurant.generic_places import Restaurant
 from restaurant.gmaps.gmaps_integrator import gmaps_place_convertor
 
+
 class PlacesGoogleFields:
     def __init__(self):
         self.mask = []
@@ -52,6 +53,7 @@ class GooglePlacesApi:
     """
     Class to wrap the google places API
     """
+
     def __init__(self):
         self.fields = PlacesGoogleFields()
 
@@ -64,9 +66,9 @@ class GooglePlacesApi:
         :return:
         """
         headers = {
-            'Content-Type': 'application/json',
-            'X-Goog-Api-Key': GMAPS_API_KEY,
-            'X-Goog-FieldMask': ','.join(self.fields.mask),
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": GMAPS_API_KEY,
+            "X-Goog-FieldMask": ",".join(self.fields.mask),
         }
 
         data = {
@@ -74,16 +76,14 @@ class GooglePlacesApi:
             "maxResultCount": 20,
             "locationRestriction": {
                 "circle": {
-                    "center": {
-                        "latitude": lat,
-                        "longitude": long
-                    },
-                    "radius": distance
+                    "center": {"latitude": lat, "longitude": long},
+                    "radius": distance,
                 }
-            }
+            },
         }
 
         return requests.post(GMAPS_URL, headers=headers, data=json.dumps(data))
+
 
 def gmaps_place_nearby_handler(response):
     local_restaurants = []
@@ -91,7 +91,7 @@ def gmaps_place_nearby_handler(response):
     if not response.ok:
         return []
     try:
-        places = response.json()['places']
+        places = response.json()["places"]
         for place in places:
             current_restaurant: Restaurant = gmaps_place_convertor(place)
             if current_restaurant.is_exploitable():
@@ -105,6 +105,7 @@ def gmaps_place_nearby_handler(response):
 
     return local_restaurants
 
+
 def google_matrix_distance(src, dst):
     """
     Get the distance by walk between two points using the google maps distance matrix api
@@ -113,19 +114,23 @@ def google_matrix_distance(src, dst):
     :return:
     """
     headers = {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': GMAPS_API_KEY,
-        'X-Goog-FieldMask': 'places.displayName,places.id,places.types,places.rating,places.priceLevel,places.formattedAddress,places.types',
+        "Content-Type": "application/json",
+        "X-Goog-Api-Key": GMAPS_API_KEY,
+        "X-Goog-FieldMask": "places.displayName,places.id,places.types,places.rating,places.priceLevel,places.formattedAddress,places.types",
     }
 
     URL = "https://maps.googleapis.com/maps/api/distancematrix/json"
 
-    response = requests.post(URL, headers=headers, params={
-        "origins": src,
-        "destinations": dst,
-        "mode": "walking",
-        "units": "metric",
-        "key": GMAPS_API_KEY
-    })
+    response = requests.post(
+        URL,
+        headers=headers,
+        params={
+            "origins": src,
+            "destinations": dst,
+            "mode": "walking",
+            "units": "metric",
+            "key": GMAPS_API_KEY,
+        },
+    )
 
     return response.json()

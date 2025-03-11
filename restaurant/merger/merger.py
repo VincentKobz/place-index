@@ -6,15 +6,18 @@ from restaurant.deduplication.deduplication import VectorDb, QueryResult
 from restaurant.merger.llm_handler import LLMHandler
 from restaurant.generic_places import Restaurant
 
+
 class ProviderSource(Enum):
     GOOGLE = "google"
     TRIPADVISOR = "tripadvisor"
     OPENSTREETMAP = "openstreetmap"
 
+
 class PlaceSource(TypedDict):
     gmaps_id: str
     tripadvisor_id: str
     source_provider: ProviderSource
+
 
 class Merger:
     places: Dict[str, Restaurant] = {}
@@ -36,11 +39,17 @@ class Merger:
 
     def merge_tags(self, existing_restaurant: Restaurant, new_restaurant: Restaurant):
         if self.use_llm:
-            new_tags = self.llm_handler.merge_tags(existing_restaurant.types, new_restaurant.types)
+            new_tags = self.llm_handler.merge_tags(
+                existing_restaurant.types, new_restaurant.types
+            )
         else:
-            new_tags = self.merge_list_unique(existing_restaurant.types, new_restaurant.types)
+            new_tags = self.merge_list_unique(
+                existing_restaurant.types, new_restaurant.types
+            )
 
-        logging.debug(f"Merging tags: {existing_restaurant.types} with {new_restaurant.types} -> {new_tags}")
+        logging.debug(
+            f"Merging tags: {existing_restaurant.types} with {new_restaurant.types} -> {new_tags}"
+        )
         existing_restaurant.types = new_tags
 
     @staticmethod
@@ -51,12 +60,25 @@ class Merger:
         @param new_restaurant:
         @return:
         """
-        existing_restaurant.contact.phone = existing_restaurant.contact.phone or new_restaurant.contact.phone
-        existing_restaurant.contact.email = existing_restaurant.contact.email or new_restaurant.contact.email
-        existing_restaurant.contact.website = existing_restaurant.contact.website or new_restaurant.contact.website
-        existing_restaurant.contact.address = existing_restaurant.contact.address or new_restaurant.contact.address
-        existing_restaurant.contact.gmaps_uri = existing_restaurant.contact.gmaps_uri or new_restaurant.contact.gmaps_uri
-        existing_restaurant.contact.tripadvisor_uri = existing_restaurant.contact.tripadvisor_uri or new_restaurant.contact.tripadvisor_uri
+        existing_restaurant.contact.phone = (
+            existing_restaurant.contact.phone or new_restaurant.contact.phone
+        )
+        existing_restaurant.contact.email = (
+            existing_restaurant.contact.email or new_restaurant.contact.email
+        )
+        existing_restaurant.contact.website = (
+            existing_restaurant.contact.website or new_restaurant.contact.website
+        )
+        existing_restaurant.contact.address = (
+            existing_restaurant.contact.address or new_restaurant.contact.address
+        )
+        existing_restaurant.contact.gmaps_uri = (
+            existing_restaurant.contact.gmaps_uri or new_restaurant.contact.gmaps_uri
+        )
+        existing_restaurant.contact.tripadvisor_uri = (
+            existing_restaurant.contact.tripadvisor_uri
+            or new_restaurant.contact.tripadvisor_uri
+        )
 
     @staticmethod
     def merge_list_unique(first_list: List, second_list: List) -> List:
@@ -76,15 +98,38 @@ class Merger:
         @param new_restaurant:
         @return:
         """
-        existing_restaurant.features.credit_card = existing_restaurant.features.credit_card or new_restaurant.features.credit_card
-        existing_restaurant.features.serve_alcohol = existing_restaurant.features.serve_alcohol or new_restaurant.features.serve_alcohol
-        existing_restaurant.features.is_accessible = existing_restaurant.features.is_accessible or new_restaurant.features.is_accessible
-        existing_restaurant.features.takeout = existing_restaurant.features.takeout or new_restaurant.features.takeout
-        existing_restaurant.features.seating = existing_restaurant.features.seating or new_restaurant.features.seating
-        existing_restaurant.features.wifi = existing_restaurant.features.wifi or new_restaurant.features.wifi
-        existing_restaurant.features.reservation = existing_restaurant.features.reservation or new_restaurant.features.reservation
-        existing_restaurant.features.parking = existing_restaurant.features.parking or new_restaurant.features.parking
-        existing_restaurant.features.dog_allowed = existing_restaurant.features.dog_allowed or new_restaurant.features.dog_allowed
+        existing_restaurant.features.credit_card = (
+            existing_restaurant.features.credit_card
+            or new_restaurant.features.credit_card
+        )
+        existing_restaurant.features.serve_alcohol = (
+            existing_restaurant.features.serve_alcohol
+            or new_restaurant.features.serve_alcohol
+        )
+        existing_restaurant.features.is_accessible = (
+            existing_restaurant.features.is_accessible
+            or new_restaurant.features.is_accessible
+        )
+        existing_restaurant.features.takeout = (
+            existing_restaurant.features.takeout or new_restaurant.features.takeout
+        )
+        existing_restaurant.features.seating = (
+            existing_restaurant.features.seating or new_restaurant.features.seating
+        )
+        existing_restaurant.features.wifi = (
+            existing_restaurant.features.wifi or new_restaurant.features.wifi
+        )
+        existing_restaurant.features.reservation = (
+            existing_restaurant.features.reservation
+            or new_restaurant.features.reservation
+        )
+        existing_restaurant.features.parking = (
+            existing_restaurant.features.parking or new_restaurant.features.parking
+        )
+        existing_restaurant.features.dog_allowed = (
+            existing_restaurant.features.dog_allowed
+            or new_restaurant.features.dog_allowed
+        )
 
     @staticmethod
     def merge_reviews(existing_restaurant: Restaurant, new_restaurant: Restaurant):
@@ -121,20 +166,34 @@ class Merger:
 
         if query_result.distance < 0.2:
             existing_restaurant = self.places[query_result.match]
-            logging.info(f"Found a match with {existing_restaurant.name} with {restaurant.name}. Distance: {query_result.distance}")
+            logging.info(
+                f"Found a match with {existing_restaurant.name} with {restaurant.name}. Distance: {query_result.distance}"
+            )
 
             self.merge_tags(existing_restaurant, restaurant)
             self.merge_contacts(existing_restaurant, restaurant)
             self.merge_features(existing_restaurant, restaurant)
             self.merge_reviews(existing_restaurant, restaurant)
-            existing_restaurant.rating = (float(existing_restaurant.rating) + float(restaurant.rating)) / 2
-            existing_restaurant.atmosphere_target = self.merge_list_unique(existing_restaurant.atmosphere_target, restaurant.atmosphere_target)
-            existing_restaurant.price_level = self.merge_list_unique(existing_restaurant.price_level, restaurant.price_level)
+            existing_restaurant.rating = (
+                float(existing_restaurant.rating) + float(restaurant.rating)
+            ) / 2
+            existing_restaurant.atmosphere_target = self.merge_list_unique(
+                existing_restaurant.atmosphere_target, restaurant.atmosphere_target
+            )
+            existing_restaurant.price_level = self.merge_list_unique(
+                existing_restaurant.price_level, restaurant.price_level
+            )
 
             source_provider = self.get_provider_type(restaurant)
-            self.merged_places[restaurant.id] = PlaceSource(gmaps_id=existing_restaurant.contact.gmaps_uri, tripadvisor_id=existing_restaurant.contact.tripadvisor_uri, source_provider=source_provider)
+            self.merged_places[restaurant.id] = PlaceSource(
+                gmaps_id=existing_restaurant.contact.gmaps_uri,
+                tripadvisor_id=existing_restaurant.contact.tripadvisor_uri,
+                source_provider=source_provider,
+            )
         else:
-            logging.debug(f"Adding {restaurant.name} to the database, no relevant match found. Distance: {query_result.distance}")
+            logging.debug(
+                f"Adding {restaurant.name} to the database, no relevant match found. Distance: {query_result.distance}"
+            )
 
             self.vector_db.add_restaurant(restaurant)
             self.places[restaurant.name] = restaurant

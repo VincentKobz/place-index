@@ -2,24 +2,26 @@ from dataclasses import dataclass
 from restaurant import TRIP_API_KEY
 import requests
 
-TRIP_API_HEADERS = {
-    "accept": "application/json"
-}
+TRIP_API_HEADERS = {"accept": "application/json"}
+
 
 @dataclass
 class TripadvisorApiSettings:
     """
     Class to store the settings for the tripadvisor api
     """
+
     key: str
     radius_unit: str = "m"
     language: str = "en"
     currency: str = "EUR"
 
+
 class TripAdvisorApi:
     """
     Class to wrap the tripadvisor api
     """
+
     NEARBY_SEARCH = "https://api.content.tripadvisor.com/api/v1/location/nearby_search"
     LOCATION = "https://api.content.tripadvisor.com/api/v1/location"
 
@@ -53,13 +55,16 @@ class TripAdvisorApi:
         params = {
             "key": self.settings.key,
             "language": self.settings.language,
-            "currency": self.settings.currency
+            "currency": self.settings.currency,
         }
 
-        response =  requests.get(f"{self.LOCATION}/{location_id}/details", headers=TRIP_API_HEADERS, params=params)
+        response = requests.get(
+            f"{self.LOCATION}/{location_id}/details",
+            headers=TRIP_API_HEADERS,
+            params=params,
+        )
 
         return response
-
 
     def api_search_by_location_wrapper(self, restaurant_name: str, address: str):
         """
@@ -74,10 +79,11 @@ class TripAdvisorApi:
             "currency": self.settings.currency,
             "category": "restaurants",
             "searchQuery": restaurant_name,
-            "address": address
+            "address": address,
         }
-        return requests.get(f"{self.LOCATION}/search", headers=TRIP_API_HEADERS, params=params)
-
+        return requests.get(
+            f"{self.LOCATION}/search", headers=TRIP_API_HEADERS, params=params
+        )
 
     def api_tripadvisor_reviews(self, location_id: int):
         """
@@ -85,8 +91,9 @@ class TripAdvisorApi:
         :param location_id:
         :return:
         """
-        params = {
-            "key": self.settings.key,
-            "language": self.settings.language
-        }
-        return requests.get(f"{self.LOCATION}/{location_id}/reviews", headers=TRIP_API_HEADERS, params=params)
+        params = {"key": self.settings.key, "language": self.settings.language}
+        return requests.get(
+            f"{self.LOCATION}/{location_id}/reviews",
+            headers=TRIP_API_HEADERS,
+            params=params,
+        )
