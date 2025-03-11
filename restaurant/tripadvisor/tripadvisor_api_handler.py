@@ -1,11 +1,14 @@
 from typing import List, Dict
 
 from restaurant.generic_places import Restaurant
-from restaurant.tripadvisor.tripadivsor_types import TripadvisorFullContent, TripadvisorNearbyHandler, \
-    TripadvisorLocationDetailsHandler, TripadvisorReviewHandler
+from restaurant.tripadvisor.tripadivsor_types import (
+    TripadvisorFullContent,
+    TripadvisorNearbyHandler,
+    TripadvisorLocationDetailsHandler,
+    TripadvisorReviewHandler,
+)
 from restaurant.tripadvisor.tripadvisor_api import TripAdvisorApi
 from restaurant.tripadvisor.tripadvisor_integrator import tripadvisor_place_convertor
-
 
 
 class TripadvisorApiHandler:
@@ -15,7 +18,9 @@ class TripadvisorApiHandler:
         self.location_details_error = 0
         self.location_search_error = 0
 
-    def fetch_all(self, lat: float, long: float, distance: int) -> dict[int, TripadvisorFullContent]:
+    def fetch_all(
+        self, lat: float, long: float, distance: int
+    ) -> dict[int, TripadvisorFullContent]:
         """
         Fetch all the data from the tripadvisor api
         :param lat:
@@ -31,12 +36,14 @@ class TripadvisorApiHandler:
         for place in nearby_places.values():
             tripadvisor_restaurants[place.location_id] = TripadvisorFullContent(
                 location_details.get(place.location_id, None),
-                location_reviews.get(place.location_id, None)
+                location_reviews.get(place.location_id, None),
             )
 
         return tripadvisor_restaurants
 
-    def search_nearby(self, lat, long, distance: int) -> Dict[int, TripadvisorNearbyHandler]:
+    def search_nearby(
+        self, lat, long, distance: int
+    ) -> Dict[int, TripadvisorNearbyHandler]:
         """
         Get the restaurants nearby using the tripadvisor nearby search api
         :param lat:
@@ -50,12 +57,16 @@ class TripadvisorApiHandler:
             self.location_search_error += 1
             return {}
 
-        places = [TripadvisorNearbyHandler.from_place(place) for place in response.json()["data"]]
+        places = [
+            TripadvisorNearbyHandler.from_place(place)
+            for place in response.json()["data"]
+        ]
 
         return {place.location_id: place for place in places}
 
-
-    def location_details(self, place_locations: List[int]) -> Dict[int, TripadvisorLocationDetailsHandler]:
+    def location_details(
+        self, place_locations: List[int]
+    ) -> Dict[int, TripadvisorLocationDetailsHandler]:
         """
         Get the details of a location using the tripadvisor details api
         :param place_locations:
@@ -73,7 +84,9 @@ class TripadvisorApiHandler:
             results[place_detail.location_id] = place_detail
         return results
 
-    def location_reviews(self, place_details: List[int]) -> Dict[int, TripadvisorReviewHandler]:
+    def location_reviews(
+        self, place_details: List[int]
+    ) -> Dict[int, TripadvisorReviewHandler]:
         """
         Get reviews from tripadvisor using the location id
         :param place_details:
@@ -96,6 +109,7 @@ class TripadvisorApiHandler:
             results[place.location_id] = place
 
         return results
+
 
 def tripadvisor_place_handler(trip_places: Dict[int, TripadvisorFullContent]):
     local_restaurants = {}
