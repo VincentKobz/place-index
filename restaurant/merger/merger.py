@@ -26,7 +26,7 @@ class Merger:
 
     def __init__(self, use_llm: bool = False):
         self.use_llm = use_llm
-        self.llm_handler = LLMHandler()
+        self.llm_handler = LLMHandler() if use_llm else None
 
     def add_restaurants(self, restaurants: Dict[str, Restaurant]):
         """
