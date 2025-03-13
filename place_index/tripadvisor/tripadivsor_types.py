@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List
 
-from restaurant.metadatas import Atmosphere
+from place_index.metadatas import Atmosphere
 
 
 @dataclass

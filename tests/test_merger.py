@@ -1,8 +1,8 @@
 import pytest
 from pygments.lexer import default
 
-from restaurant.generic_places import Restaurant
-from restaurant.merger.merger import Merger
+from place_index.generic_places import Restaurant
+from place_index.merger.merger import Merger
 from tests.test_fixture import tags_data, contact_data, feature_data, list_data
 
 

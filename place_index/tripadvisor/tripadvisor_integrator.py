@@ -1,8 +1,8 @@
 from typing import List
 
-from restaurant.generic_places import Restaurant, Contact, Features, Reviews
-from restaurant.metadatas import PriceLevel
-from restaurant.tripadvisor.tripadvisor_api_handler import (
+from place_index.generic_places import Restaurant, Contact, Features, Reviews
+from place_index.metadatas import PriceLevel
+from place_index.tripadvisor.tripadvisor_api_handler import (
     TripadvisorFullContent,
     TripadvisorLocationDetailsHandler,
 )

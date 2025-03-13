@@ -1,4 +1,4 @@
-from restaurant.generic_places import Contact, Features
+from place_index.generic_places import Contact, Features
 
 tags_data = [
     (["italian", "pasta"], ["italian", "pizza"], ["italian", "pasta", "pizza"]),

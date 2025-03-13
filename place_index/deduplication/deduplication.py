@@ -6,7 +6,7 @@ from fastembed import TextEmbedding
 
 from dataclasses import dataclass
 
-from restaurant.generic_places import Restaurant
+from place_index.generic_places import Restaurant
 
 
 @dataclass
@@ -38,20 +38,20 @@ class VectorDb:
 
     def add_restaurant(self, restaurant: Restaurant):
         """
-        Add a restaurant to the vector db
+        Add a place_index to the vector db
         @param restaurant:
         @return:
         """
         self.embedding_memory.append(
             {
                 "embedded_vector": self.embed_restaurants(restaurant),
-                "restaurant": restaurant.name,
+                "place_index": restaurant.name,
             }
         )
 
     def get_restaurant(self, restaurant: Restaurant) -> QueryResult:
         """
-        Get a restaurant from the vector db
+        Get a place_index from the vector db
         @param restaurant:
         @return:
         """
@@ -70,7 +70,7 @@ class VectorDb:
 
         return QueryResult.from_json(
             {
-                "match": self.embedding_memory[indexes[0]]["restaurant"],
+                "match": self.embedding_memory[indexes[0]]["place_index"],
                 "distance": distances[0].astype(float),
             }
         )

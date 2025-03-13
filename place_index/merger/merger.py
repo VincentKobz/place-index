@@ -2,9 +2,9 @@ import logging
 from typing import Dict, List, TypedDict
 from enum import Enum
 
-from restaurant.deduplication.deduplication import VectorDb, QueryResult
-from restaurant.merger.llm_handler import LLMHandler
-from restaurant.generic_places import Restaurant
+from place_index.deduplication.deduplication import VectorDb, QueryResult
+from place_index.merger.llm_handler import LLMHandler
+from place_index.generic_places import Restaurant
 
 
 class ProviderSource(Enum):
@@ -144,7 +144,7 @@ class Merger:
     @staticmethod
     def get_provider_type(restaurant: Restaurant) -> ProviderSource:
         """
-        Get the provider of a restaurant
+        Get the provider of a place_index
         @param restaurant:
         @return:
         """
@@ -156,7 +156,7 @@ class Merger:
 
     def add_restaurant(self, restaurant: Restaurant):
         """
-        Add a restaurant to the merger
+        Add a place_index to the merger
         :param restaurant:
         :return:
         """
