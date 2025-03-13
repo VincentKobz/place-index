@@ -4,7 +4,7 @@ from typing import List
 
 from openai import OpenAI, AuthenticationError, APIConnectionError
 
-from restaurant import LLM_KEY
+from place_index import LLM_KEY
 
 
 @dataclass
@@ -16,12 +16,12 @@ class LLMHandler:
     def __init__(self):
         self.client = OpenAI(base_url="https://api.deepseek.com", api_key=LLM_KEY)
         self.merge_tags_prompt = """
-        I will provide you with two lists of tags from different sources. These tags describe the type of cuisine or food offered by a restaurant.
+        I will provide you with two lists of tags from different sources. These tags describe the type of cuisine or food offered by a place_index.
         Your task is to merge these lists into a single, cohesive list by selecting the most appropriate tags while avoiding redundancies or duplicates.
-        Ensure that the final list is coherent and accurately represents the style of cuisine or type of restaurant.
+        Ensure that the final list is coherent and accurately represents the style of cuisine or type of place_index.
         The names of the tags should be uniform, starting with a capital letter and using spaces where necessary.
-        You should remove "point of interest" and "establishment", "restaurant" and "food" from the tags:
-        exemple: "Italian restaurant" -> "Italian"
+        You should remove "point of interest" and "establishment", "place_index" and "food" from the tags:
+        exemple: "Italian place_index" -> "Italian"
 
         Expected OUTPUT JSON object: {tags: List[str]}
         """

@@ -1,14 +1,14 @@
 from typing import List, Dict
 
-from restaurant.generic_places import Restaurant
-from restaurant.tripadvisor.tripadivsor_types import (
+from place_index.generic_places import Restaurant
+from place_index.tripadvisor.tripadivsor_types import (
     TripadvisorFullContent,
     TripadvisorNearbyHandler,
     TripadvisorLocationDetailsHandler,
     TripadvisorReviewHandler,
 )
-from restaurant.tripadvisor.tripadvisor_api import TripAdvisorApi
-from restaurant.tripadvisor.tripadvisor_integrator import tripadvisor_place_convertor
+from place_index.tripadvisor.tripadvisor_api import TripAdvisorApi
+from place_index.tripadvisor.tripadvisor_integrator import tripadvisor_place_convertor
 
 
 class TripadvisorApiHandler:

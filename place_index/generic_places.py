@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from restaurant.metadatas import PriceLevel, Atmosphere
+from place_index.metadatas import PriceLevel, Atmosphere
 
 
 @dataclass
@@ -10,8 +10,8 @@ class Contact:
     email: str
     website: str
     address: str
-    gmaps_uri: str
-    tripadvisor_uri: str
+    gmaps_uri: str | None
+    tripadvisor_uri: str | None
     specific_uri: str
 
 
@@ -60,14 +60,14 @@ class Restaurant:
 
     def is_exploitable(self):
         """
-        Check if the restaurant is exploitable (has enough basic information)
+        Check if the place_index is exploitable (has enough basic information)
         :return:
         """
         return self.name != "" and self.rating != -1 and self.contact.address != ""
 
     def is_data_qualitative(self):
         """
-        Check if the restaurant has qualitative data (has enough qualitative information to be exploitable)
+        Check if the place_index has qualitative data (has enough qualitative information to be exploitable)
         :return:
         """
         return (
@@ -75,5 +75,5 @@ class Restaurant:
             and self.price_level != PriceLevel.UNKNOWN
             and len(self.types) > 0
             and len(self.reviews) > 0
-            and any(self.features.__getstate__().values())
+            and any(self.features.__dict__.values())
         )
