@@ -2,11 +2,11 @@ import json
 
 import requests
 
-from restaurant import GMAPS_API_KEY
-from restaurant.metadatas import GMAPS_URL
+from place_index import GMAPS_API_KEY
+from place_index.metadatas import GMAPS_URL
 
-from restaurant.generic_places import Restaurant
-from restaurant.gmaps.gmaps_integrator import gmaps_place_convertor
+from place_index.generic_places import Restaurant
+from place_index.gmaps.gmaps_integrator import gmaps_place_convertor
 
 
 class PlacesGoogleFields:
@@ -72,7 +72,7 @@ class GooglePlacesApi:
         }
 
         data = {
-            "includedTypes": ["restaurant"],
+            "includedTypes": ["place_index"],
             "maxResultCount": 20,
             "locationRestriction": {
                 "circle": {

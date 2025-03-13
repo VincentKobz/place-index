@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from restaurant import TRIP_API_KEY
+from place_index import TRIP_API_KEY
 import requests
 
 TRIP_API_HEADERS = {"accept": "application/json"}
@@ -68,7 +68,7 @@ class TripAdvisorApi:
 
     def api_search_by_location_wrapper(self, restaurant_name: str, address: str):
         """
-        Search for a restaurant by name and address using the tripadvisor search api
+        Search for a place_index by name and address using the tripadvisor search api
         :param restaurant_name:
         :param address:
         :return:

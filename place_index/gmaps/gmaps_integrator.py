@@ -1,5 +1,5 @@
-from restaurant.generic_places import Restaurant, Contact, Features, Reviews
-from restaurant.metadatas import PriceLevel, Atmosphere
+from place_index.generic_places import Restaurant, Contact, Features, Reviews
+from place_index.metadatas import PriceLevel, Atmosphere
 
 gmaps_price_level_mapper = {
     "": PriceLevel.UNKNOWN,
