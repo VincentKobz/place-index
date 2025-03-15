@@ -1,4 +1,5 @@
 import json
+import logging
 
 import requests
 
@@ -72,7 +73,7 @@ class GooglePlacesApi:
         }
 
         data = {
-            "includedTypes": ["place_index"],
+            "includedTypes": ["restaurant"],
             "maxResultCount": 20,
             "locationRestriction": {
                 "circle": {
@@ -99,9 +100,9 @@ def gmaps_place_nearby_handler(response):
             else:
                 not_exploitable += 1
     except KeyError as e:
-        print(e)
+        logging.error("KeyError: %s, when parsing response: %s", e, response.text)
 
-    print(f"Number of not exploitable restaurants: {not_exploitable}")
+    logging.debug(f"Number of not exploitable restaurants: {not_exploitable}")
 
     return local_restaurants
 
