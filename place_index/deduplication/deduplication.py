@@ -30,9 +30,11 @@ class VectorDb:
         self.embedding_model = TextEmbedding()
 
     def embed_restaurants(self, restaurant: Restaurant):
-        embedded_vector_place_name = list(self.embedding_model.embed(restaurant.name))[
-            0
-        ]
+        embedded_vector_place_name = list(
+            self.embedding_model.embed(
+                f"{restaurant.name} + {restaurant.contact.address}"
+            )
+        )[0]
 
         return np.array(embedded_vector_place_name).astype(np.float32)
 
