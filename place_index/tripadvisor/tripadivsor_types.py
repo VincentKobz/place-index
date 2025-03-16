@@ -1,5 +1,5 @@
+import logging
 from dataclasses import dataclass
-from enum import Enum
 from typing import List
 
 from place_index.metadatas import Atmosphere
@@ -92,7 +92,7 @@ class TripadvisorReview:
             Atmosphere(trip_type) if trip_type in Atmosphere else Atmosphere.UNKNOWN
         )
         if trip_type_enum == Atmosphere.UNKNOWN:
-            print(f"Unknown trip type: {trip_type}")
+            logging.debug(f"Unknown trip type: {trip_type}")
 
         return cls(
             review["lang"],

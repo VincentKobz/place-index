@@ -57,7 +57,6 @@ class GoogleMapsProvider(Provider):
                 continue
 
             restaurants = gmaps_place_nearby_handler(response)
-            print("number of restaurants", len(restaurants))
 
             for restaurant in restaurants:
                 gmaps_restaurants[restaurant.id] = restaurant
