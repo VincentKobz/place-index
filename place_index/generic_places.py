@@ -48,6 +48,7 @@ class Restaurant:
     contact: Contact
     features: Features
     reviews: List[Reviews]
+    number_of_reviews: int
 
     @classmethod
     def from_json(cls, json):

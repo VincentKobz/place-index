@@ -47,6 +47,7 @@ class PlacesGoogleFields:
             "places.goodForGroups",
             "places.goodForWatchingSports",
             "places.allowsDogs",
+            "places.userRatingCount",
         ]
 
 

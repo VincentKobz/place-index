@@ -32,6 +32,7 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
     features: List[str]
     types: List[str]
     trip_types: List[Atmosphere]
+    number_of_reviews: int
 
     @classmethod
     def from_place(cls, place_details):
@@ -58,6 +59,7 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
                 for trip_type in place_details.get("trip_types", [])
                 if "localized_name" in trip_type
             ],
+            place_details.get("num_reviews", 0),
         )
 
     @staticmethod
