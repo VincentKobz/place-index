@@ -149,9 +149,26 @@ class Merger:
             case restaurant.contact.tripadvisor_uri:
                 return ProviderSource.TRIPADVISOR
 
+    @staticmethod
+    def merge_rating(
+        rating: float, new_rating: float, nb_reviews, new_nb_reviews
+    ) -> float:
+        """
+        Merge the rating of two restaurants
+        @param rating:
+        @param new_rating:
+        @return:
+        """
+        total_number_reviews = nb_reviews + new_nb_reviews
+
+        existing_rating_ratio = nb_reviews / total_number_reviews
+        restaurant_rating_ratio = new_nb_reviews / total_number_reviews
+
+        return rating * existing_rating_ratio + new_rating * restaurant_rating_ratio
+
     def add_restaurant(self, restaurant: Restaurant):
         """
-        Add a place_index to the merger
+        Add a place to the merger
         :param restaurant:
         :return:
         """
@@ -170,15 +187,22 @@ class Merger:
             self.merge_contacts(existing_restaurant, restaurant)
             self.merge_features(existing_restaurant, restaurant)
             self.merge_reviews(existing_restaurant, restaurant)
-            existing_restaurant.rating = (
-                float(existing_restaurant.rating) + float(restaurant.rating)
-            ) / 2
+
             existing_restaurant.atmosphere_target = self.merge_list_unique(
                 existing_restaurant.atmosphere_target, restaurant.atmosphere_target
             )
             existing_restaurant.price_level = self.merge_list_unique(
                 existing_restaurant.price_level, restaurant.price_level
             )
+
+            existing_restaurant.rating = self.merge_rating(
+                existing_restaurant.rating,
+                restaurant.rating,
+                existing_restaurant.number_of_reviews,
+                restaurant.number_of_reviews,
+            )
+
+            existing_restaurant.number_of_reviews += restaurant.number_of_reviews
 
             source_provider = self.get_provider_type(restaurant)
             self.merged_places[restaurant.id] = PlaceSource(

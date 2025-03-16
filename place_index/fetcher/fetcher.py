@@ -30,7 +30,7 @@ class TripadvisorProvider(Provider):
         """
         tripadvisor_restaurants = {}
         tripadvisor_api_handler = TripadvisorApiHandler()
-        for idx, (latitude, longitude) in enumerate(coordinates):
+        for idx, (latitude, longitude) in enumerate(coordinates[:10]):
             places = tripadvisor_api_handler.fetch_all(latitude, longitude, distance)
             local_restaurants = tripadvisor_place_handler(places)
             tripadvisor_restaurants.update(local_restaurants)
@@ -48,7 +48,7 @@ class GoogleMapsProvider(Provider):
         """
         gmaps_restaurants = {}
         gmaps_api = GooglePlacesApi()
-        for idx, (latitude, longitude) in enumerate(coordinates):
+        for idx, (latitude, longitude) in enumerate(coordinates[:10]):
             response = gmaps_api.google_api_wrapper(latitude, longitude, distance)
             if not response.ok:
                 logging.warning(
