@@ -1,3 +1,4 @@
+import logging
 from typing import List, Dict
 
 from place_index.generic_places import Restaurant
@@ -34,9 +35,17 @@ class TripadvisorApiHandler:
         location_reviews = self.location_reviews(list(nearby_places.keys()))
 
         for place in nearby_places.values():
+            current_details = location_details.get(place.location_id, None)
+            current_reviews = location_reviews.get(place.location_id, None)
+
+            if not current_details or not current_reviews:
+                logging.error(
+                    f"Tripadvisor API request failed: {self.location_details_error}, {self.location_reviews_error}"
+                )
+                continue
+
             tripadvisor_restaurants[place.location_id] = TripadvisorFullContent(
-                location_details.get(place.location_id, None),
-                location_reviews.get(place.location_id, None),
+                current_details, current_reviews
             )
 
         return tripadvisor_restaurants
@@ -54,6 +63,9 @@ class TripadvisorApiHandler:
         self.location_search_error = 0
         response = self.tripadvisor.api_nearby_wrapper(lat, long, distance)
         if not response.ok:
+            logging.error(
+                f"Tripadvisor API request failed: {response.status_code}, response: {response.text}"
+            )
             self.location_search_error += 1
             return {}
 
@@ -77,6 +89,9 @@ class TripadvisorApiHandler:
         for location_id in place_locations:
             response = self.tripadvisor.api_details_wrapper(location_id)
             if not response.ok:
+                logging.error(
+                    f"Tripadvisor API request failed: {response.status_code}, response: {response.text}"
+                )
                 self.location_details_error += 1
                 continue
 
@@ -97,6 +112,9 @@ class TripadvisorApiHandler:
         for location_id in place_details:
             response = self.tripadvisor.api_tripadvisor_reviews(location_id)
             if not response.ok:
+                logging.error(
+                    f"Tripadvisor API request failed: {response.status_code}, response: {response.text}"
+                )
                 self.location_reviews_error += 1
                 continue
 
@@ -120,7 +138,5 @@ def tripadvisor_place_handler(trip_places: Dict[int, TripadvisorFullContent]):
             local_restaurants[current_restaurant.id] = current_restaurant
         else:
             not_exploitable += 1
-
-    print(f"Number of not exploitable restaurants: {not_exploitable}")
 
     return local_restaurants

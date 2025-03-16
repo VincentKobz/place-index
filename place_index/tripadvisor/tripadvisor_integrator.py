@@ -141,4 +141,5 @@ def tripadvisor_place_convertor(
         features=place_features,
         reviews=place_reviews,
         atmosphere_target=trip_details.trip_types,
+        number_of_reviews=trip_details.number_of_reviews,
     )

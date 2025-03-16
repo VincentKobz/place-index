@@ -148,4 +148,5 @@ def gmaps_place_convertor(gmaps_place: dict) -> Restaurant:
         features=place_features,
         reviews=place_reviews,
         atmosphere_target=restaurant_atmosphere,
+        number_of_reviews=gmaps_place.get("userRatingCount", 0),
     )
