@@ -1,16 +1,10 @@
 import logging
 from typing import Dict, List, TypedDict
-from enum import Enum
 
 from place_index.deduplication.deduplication import VectorDb, QueryResult
 from place_index.merger.llm_handler import LLMHandler
 from place_index.generic_places import Restaurant
-
-
-class ProviderSource(Enum):
-    GOOGLE = "google"
-    TRIPADVISOR = "tripadvisor"
-    OPENSTREETMAP = "openstreetmap"
+from place_index.metadatas import ProviderSource
 
 
 class PlaceSource(TypedDict):
@@ -150,7 +144,7 @@ class Merger:
         """
         match restaurant:
             case restaurant.contact.gmaps_uri:
-                return ProviderSource.GOOGLE
+                return ProviderSource.GOOGLE_MAPS
             case restaurant.contact.tripadvisor_uri:
                 return ProviderSource.TRIPADVISOR
 
