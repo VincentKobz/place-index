@@ -21,6 +21,7 @@ class Merger:
     def __init__(self, use_llm: bool = False):
         self.use_llm = use_llm
         self.llm_handler = LLMHandler() if use_llm else None
+        self.match_threshold = 0.35
 
     def add_restaurants(self, restaurants: Dict[int, Restaurant]):
         """
@@ -158,10 +159,11 @@ class Merger:
 
         query_result: QueryResult = self.vector_db.get_restaurant(restaurant)
 
-        if query_result.distance < 0.2:
+        if query_result.distance < self.match_threshold:
             existing_restaurant = self.places[query_result.match]
             logging.info(
                 f"Found a match with {existing_restaurant.name} with {restaurant.name}. Distance: {query_result.distance}"
+                f"Address: {existing_restaurant.contact.address} -> {restaurant.contact.address}"
             )
 
             self.merge_tags(existing_restaurant, restaurant)
