@@ -22,9 +22,3 @@ class Atmosphere(str, Enum):
     BUSINESS = "Business"
     SPORT = "Sport"
     UNKNOWN = "Unknown"
-
-
-class ProviderSource(Enum):
-    GOOGLE_MAPS = "google_maps"
-    TRIPADVISOR = "tripadvisor"
-    OPENSTREETMAP = "openstreetmap"

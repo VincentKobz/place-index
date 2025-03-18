@@ -59,7 +59,7 @@ class TripadvisorLocationDetailsHandler(BaseTripadvisorContent):
                 for trip_type in place_details.get("trip_types", [])
                 if "localized_name" in trip_type
             ],
-            place_details.get("num_reviews", 0),
+            int(place_details.get("num_reviews", 0)),
         )
 
     @staticmethod

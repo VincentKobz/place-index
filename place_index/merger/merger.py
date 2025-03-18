@@ -2,9 +2,9 @@ import logging
 from typing import Dict, List, TypedDict
 
 from place_index.deduplication.deduplication import VectorDb, QueryResult
+from place_index.fetcher.provider import ProviderSource
 from place_index.merger.llm_handler import LLMHandler
 from place_index.generic_places import Restaurant
-from place_index.metadatas import ProviderSource
 
 
 class PlaceSource(TypedDict):
@@ -151,10 +151,12 @@ class Merger:
 
     @staticmethod
     def merge_rating(
-        rating: float, new_rating: float, nb_reviews, new_nb_reviews
+        rating: float, new_rating: float, nb_reviews: int, new_nb_reviews: int
     ) -> float:
         """
         Merge the rating of two restaurants
+        @param new_nb_reviews:
+        @param nb_reviews:
         @param rating:
         @param new_rating:
         @return:
