@@ -1,13 +1,13 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Tuple
 
+from place_index.fetcher.provider import ProviderSource
 from place_index.generic_places import Restaurant
 from place_index.gmaps.gmaps_api_handler import (
     GooglePlacesApi,
     gmaps_place_nearby_handler,
 )
-from place_index.metadatas import ProviderSource
 from place_index.tripadvisor.tripadvisor_api_handler import (
     TripadvisorApiHandler,
     tripadvisor_place_handler,
@@ -21,7 +21,9 @@ class Provider(ABC):
 
 
 class TripadvisorProvider(Provider):
-    def fetch(self, coordinates: List[int], distance: int) -> dict[int, Restaurant]:
+    def fetch(
+        self, coordinates: Tuple[int, int], distance: int
+    ) -> dict[int, Restaurant]:
         """
         Fetch the data from the tripadvisor provider
         @param coordinates:
@@ -39,7 +41,9 @@ class TripadvisorProvider(Provider):
 
 
 class GoogleMapsProvider(Provider):
-    def fetch(self, coordinates: List[int], distance: int) -> dict[int, Restaurant]:
+    def fetch(
+        self, coordinates: Tuple[int, int], distance: int
+    ) -> dict[int, Restaurant]:
         """
         Fetch the data from the gmaps place provider
         @param coordinates:
@@ -65,8 +69,10 @@ class GoogleMapsProvider(Provider):
 
 
 class Fetcher:
-    def __init__(self):
-        self.providers = []
+    def __init__(self, *providers: ProviderSource):
+        self.providers: List[Provider] = []
+        for provider in providers:
+            self.add_provider(provider)
 
     def add_provider(self, provider: ProviderSource):
         """
