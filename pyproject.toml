@@ -9,7 +9,6 @@ requires-python = "==3.12.*"
 dependencies = [
     "dotenv>=0.9.9",
     "fastembed>=0.6.0",
-    "firebase-admin>=6.6.0",
     "mrpt>=2.0.1",
     "openai>=1.65.2",
     "tensorflow-hub>=0.16.1",
